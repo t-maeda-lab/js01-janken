@@ -28,6 +28,8 @@
                 コンピュータの手：「<span id="pc-hand">まだ選んでいません</span>」
             </div>
             <div id="result" class="result">手を選んでください</div>
+    
+            <button id="restart-btn" style="display:none; margin-top: 20px;">もう一度勝負する！</button>
         </div>
     </div>
 </main>
@@ -51,61 +53,72 @@
 // ---------------------------------------------------------------
 
 // じゃんけんゲームの JavaScript を記述してください！
+// -------------------------------------------------
+// 1. じゃんけんの処理
+// -------------------------------------------------
 $(".choice-btn").on("click", function() {
 
-    // --- 1. 自分の手 (numA) ---
+    // 自分の手
     const clickedId = $(this).attr("id");
     let numA;
     if (clickedId === "gu")    numA = 1;
     if (clickedId === "choki") numA = 2;
     if (clickedId === "pa")    numA = 3;
 
-    // --- 2. 相手の手 (numB) ---
+    // 相手の手
     const numB = Math.floor(Math.random() * 3) + 1;
-    
-    // 相手の手を表示
     let pcHandName = "";
     if (numB === 1) pcHandName = "グー";
     if (numB === 2) pcHandName = "チョキ";
     if (numB === 3) pcHandName = "パー";
     $("#pc-hand").html(pcHandName);
 
+    // --- 勝敗判定 ---
 
-    // --- 3. 勝敗判定と画面変更（ここがメイン！） ---
-    
     // 【A. あいこの場合】
     if (numA === numB) {
-        $(".result").html("あいこ");
-        
-        // 背景を黄色にする
+        $(".result").html("あいこ！もう一回！");
         $("body").css("background-color", "yellow"); 
-        
-        // ※「もう一度」なので、ボタンは消さずにそのまま
+        // あいこはボタンを消さないので、そのまま
 
-    // 【B. 自分が勝つ場合】
+    // 【B. 勝ちの場合】
     } else if (
-        (numA === 1 && numB === 2) || // グー vs チョキ
-        (numA === 2 && numB === 3) || // チョキ vs パー
-        (numA === 3 && numB === 1)    // パー vs グー
+        (numA === 1 && numB === 2) || 
+        (numA === 2 && numB === 3) || 
+        (numA === 3 && numB === 1)
     ) {
-        $(".result").html("勝ち！");
-        
-        // 背景をピンクにする
+        $(".result").html("勝ち！おめでとう！");
         $("body").css("background-color", "pink");
         
-        // 勝負終了なので、ボタンを押せなくする（隠す）
-        $(".choice-btn").hide(); 
+        // ボタンを隠して、リセットボタンを出す！
+        $(".choice-btn").hide();
+        $("#restart-btn").show(); // ★ここが追加
 
-    // 【C. 負けの場合（それ以外全部）】
+    // 【C. 負けの場合】
     } else {
-        $(".result").html("負け...");
-        
-        // 背景を水色にする
+        $(".result").html("負け...残念...");
         $("body").css("background-color", "skyblue");
         
-        // 勝負終了なので、ボタンを押せなくする
+        // ボタンを隠して、リセットボタンを出す！
         $(".choice-btn").hide();
+        $("#restart-btn").show(); // ★ここが追加
     }
+});
+
+
+// -------------------------------------------------
+// 2. 「もう一度勝負する」ボタンが押されたら...
+// -------------------------------------------------
+$("#restart-btn").on("click", function() {
+    
+    // 画面を最初の状態に戻す
+    $(".result").html("結果が表示されるよ");
+    $("#pc-hand").html("まだ選んでいません");
+    $("body").css("background-color", "white"); // 背景を白に戻す
+
+    // ボタンの表示/非表示を元に戻す
+    $(".choice-btn").show(); // じゃんけんボタンを復活
+    $("#restart-btn").hide(); // リセットボタンを隠す
 
 });
 </script>
